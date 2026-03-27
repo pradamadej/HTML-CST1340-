@@ -227,10 +227,12 @@
         /* Page switching - hides/shows pages */
         .page {
             display: none;
+            background: #14141c;
         }
 
         .page.active {
             display: block;
+            background: #14141c;
         }
 
 /* Mobile responsive */
