@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineX - Movie Tracker</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Swiper CSS (for carousel) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+
+<!-- Placeholder for external structure sections -->
+<div id="site-header"></div>
+<main id="site-content">
+    <div id="site-content-home"></div>
+    <div id="site-content-coming"></div>
+</main>
+<div id="site-footer"></div>
+
+<!-- ========== SCRIPTS ========== -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    async function loadPartial(container, url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`${url} load failed`);
+            document.getElementById(container).innerHTML = await response.text();
+        } catch (err) {
+            console.error(err);
+            document.getElementById(container).innerHTML = `<p class="error">Failed to load ${url}</p>`;
+        }
+    }
+
+    async function loadSectionedLayout() {
+        await Promise.all([
+            loadPartial('site-header', 'partials/header.html'),
+            loadPartial('site-content-home', 'partials/home.html'),
+            loadPartial('site-content-coming', 'partials/coming.html'),
+            loadPartial('site-footer', 'partials/footer.html')
+        ]);
+    }
+
+    // ========== MOVIE DATA ==========
+    const carouselMovies = [
+        { title: "Dune: Part Two", year: "2024", rating: "8.6", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/8b8d8wLfZ6pZ0UwYqK3Qpz7c1M.jpg", fallback: "https://placehold.co/600x400/1a1a24/9b87f5?text=Dune+2" },
+        { title: "Gladiator 2", year: "2024", rating: "8.1", genre: "Action", img: "https://image.tmdb.org/t/p/w780/2qN1D2zS5hUQ1nW4kRfQvG2Yj.jpg", fallback: "https://placehold.co/600x400/1a1a24/c084fc?text=Gladiator+2" },
+        { title: "Joker: Folie à Deux", year: "2024", rating: "8.7", genre: "Drama", img: "https://image.tmdb.org/t/p/w780/4bP7YJvYqGqVqRjvZcXQpWm3L.jpg", fallback: "https://placehold.co/600x400/1a1a24/f5b042?text=Joker+2" },
+        { title: "Deadpool & Wolverine", year: "2024", rating: "8.4", genre: "Action", img: "https://image.tmdb.org/t/p/w780/8cdWjvZcUx3X7cR9qYkYvU6Kj.jpg", fallback: "https://placehold.co/600x400/1a1a24/ff4d6d?text=Deadpool" },
+        { title: "Mickey 17", year: "2025", rating: "7.8", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/3rRkL9VqE8WfQn6bS7dYyUJkM.jpg", fallback: "https://placehold.co/600x400/1a1a24/86efac?text=Mickey+17" }
+    ];
+
+    const trendingMovies = [
+        { title: "Oppenheimer", year: "2023", rating: "8.9", genre: "Biography", img: "https://image.tmdb.org/t/p/w780/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg", fallback: "https://placehold.co/600x400/1a1a24/ffb347?text=Oppenheimer" },
+        { title: "Poor Things", year: "2023", rating: "8.2", genre: "Comedy", img: "https://image.tmdb.org/t/p/w780/6dH7D2mR8QvZcXkLpNqWwYfG.jpg", fallback: "https://placehold.co/600x400/1a1a24/db7f67?text=Poor+Things" },
+        { title: "The Batman 2", year: "2025", rating: "—", genre: "Crime", img: "https://image.tmdb.org/t/p/w780/74xT7VcSqLpYQpXpVjWjJjYzK.jpg", fallback: "https://placehold.co/600x400/1a1a24/9d4edd?text=Batman+2" },
+        { title: "Furiosa", year: "2024", rating: "8.0", genre: "Action", img: "https://image.tmdb.org/t/p/w780/8tZ6yUjZcQqNlNvXrCbMvA2f.jpg", fallback: "https://placehold.co/600x400/1a1a24/ffb347?text=Furiosa" }
+    ];
+
+    const comingMovies = [
+        { title: "Avatar: Fire and Ash", release: "Dec 19, 2025", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/7bWxAsNPvU6P1cJxTzqYvNqF.jpg", fallback: "https://placehold.co/600x400/15202b/3b82f6?text=Avatar+3" },
+        { title: "Snow White", release: "Mar 21, 2025", genre: "Fantasy", img: "https://image.tmdb.org/t/p/w780/7G8zKjTpYVqUwXeRcVbNnHjM.jpg", fallback: "https://placehold.co/600x400/2e2740/facc15?text=Snow+White" },
+        { title: "Thunderbolts*", release: "May 2, 2025", genre: "Superhero", img: "https://image.tmdb.org/t/p/w780/5yEoMqWpVxQzNnJjKkLlZzXc.jpg", fallback: "https://placehold.co/600x400/1e1b2f/ef4444?text=Thunderbolts" },
+        { title: "Mission: Impossible 8", release: "May 23, 2025", genre: "Action", img: "https://image.tmdb.org/t/p/w780/6xKjEwVbYpFqRmZcXvBnNlYt.jpg", fallback: "https://placehold.co/600x400/242034/eab308?text=MI8" },
+        { title: "Wicked: Part Two", release: "Nov 26, 2025", genre: "Musical", img: "https://image.tmdb.org/t/p/w780/3vPcJtVwWbYkFqLmNpZxRcVb.jpg", fallback: "https://placehold.co/600x400/1e293b/ec489a?text=Wicked+2" },
+        { title: "Fantastic Four", release: "Jul 25, 2025", genre: "Superhero", img: "https://image.tmdb.org/t/p/w780/9jZcNqWpVbYxRkLmNpQzYvXc.jpg", fallback: "https://placehold.co/600x400/0f172a/06b6d4?text=Fantastic+Four" }
+    ];
+
+    function setImg(imgElement, primary, fallback) {
+        imgElement.src = primary;
+        imgElement.onerror = function() {
+            if (imgElement.src !== fallback) {
+                imgElement.src = fallback;
+            }
+        };
+    }
+
+    function buildCarousel() {
+        const wrapper = document.getElementById("carouselList");
+        if (!wrapper) return;
+        wrapper.innerHTML = "";
+        for (let m of carouselMovies) {
+            const slide = document.createElement("div");
+            slide.className = "swiper-slide";
+            slide.innerHTML = `
+                <div class="movie-card">
+                    <img class="carousel-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
+                    <div class="movie-info">
+                        <h3>${m.title}</h3>
+                        <div class="movie-details">
+                            <span>${m.year}</span>
+                            <span>${m.genre}</span>
+                            <span class="rating"><i class="fas fa-star"></i> ${m.rating}</span>
+                        </div>
+                        <div class="trailer-btn">Watch trailer <i class="fas fa-play"></i></div>
+                    </div>
+                </div>
+            `;
+            wrapper.appendChild(slide);
+        }
+        const imgs = document.querySelectorAll(".carousel-img");
+        imgs.forEach(img => {
+            const src = img.getAttribute("data-src");
+            const fall = img.getAttribute("data-fallback");
+            setImg(img, src, fall);
+        });
+    }
+
+    function buildTrending() {
+        const grid = document.getElementById("trendingGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        for (let m of trendingMovies) {
+            const card = document.createElement("div");
+            card.className = "grid-card";
+            card.innerHTML = `
+                <img class="grid-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
+                <div class="card-info">
+                    <h3>${m.title}</h3>
+                    <div class="movie-details">
+                        <span>${m.year}</span>
+                        <span>${m.genre}</span>
+                        ${m.rating !== "—" ? `<span class="rating"><i class="fas fa-star"></i> ${m.rating}</span>` : ""}
+                    </div>
+                    <div class="trailer-btn" style="margin-top:8px;">Details</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+        const gridImgs = document.querySelectorAll("#trendingGrid .grid-img");
+        gridImgs.forEach(img => {
+            const src = img.getAttribute("data-src");
+            const fall = img.getAttribute("data-fallback");
+            setImg(img, src, fall);
+        });
+    }
+
+    function buildComingSoon() {
+        const grid = document.getElementById("comingGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        for (let m of comingMovies) {
+            const card = document.createElement("div");
+            card.className = "grid-card";
+            card.innerHTML = `
+                <img class="coming-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
+                <div class="card-info">
+                    <div class="release-badge"><i class="far fa-calendar-alt"></i> ${m.release}</div>
+                    <h3>${m.title}</h3>
+                    <div class="movie-details">${m.genre}</div>
+                    <button class="remind-button" data-movie="${m.title}"><i class="far fa-bell"></i> Remind me</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+        const comingImgs = document.querySelectorAll("#comingGrid .coming-img");
+        comingImgs.forEach(img => {
+            const src = img.getAttribute("data-src");
+            const fall = img.getAttribute("data-fallback");
+            setImg(img, src, fall);
+        });
+        document.querySelectorAll(".remind-button").forEach(btn => {
+            btn.addEventListener("click", function(e) {
+                e.stopPropagation();
+                const movieName = this.getAttribute("data-movie");
+                alert("Reminder set for " + movieName + "! We'll notify you.");
+            });
+        });
+    }
+
+    function bindActions() {
+        document.body.addEventListener("click", function(e) {
+            if (e.target.closest(".trailer-btn")) {
+                const btn = e.target.closest(".trailer-btn");
+                const card = btn.closest(".movie-card") || btn.closest(".grid-card");
+                let title = "this movie";
+                if (card) {
+                    const titleEl = card.querySelector("h3");
+                    if (titleEl) title = titleEl.innerText;
+                }
+                alert("🎬 Trailer preview for " + title + " - coming soon!");
+            }
+        });
+    }
+
+    let swiperInstance = null;
+    function initSwiper() {
+        if (swiperInstance) swiperInstance.destroy(true, true);
+        swiperInstance = new Swiper(".movie-carousel", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                1000: { slidesPerView: 3 }
+            },
+            autoplay: { delay: 4000, disableOnInteraction: false }
+        });
+    }
+
+    function setupNavigation() {
+        const homePageDiv = document.getElementById("homePage");
+        const comingPageDiv = document.getElementById("comingPage");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        function switchPage(pageName) {
+            if (pageName === "home") {
+                homePageDiv.classList.add("active");
+                comingPageDiv.classList.remove("active");
+                setTimeout(() => {
+                    if (swiperInstance) swiperInstance.update();
+                    else initSwiper();
+                }, 50);
+            } else if (pageName === "coming") {
+                homePageDiv.classList.remove("active");
+                comingPageDiv.classList.add("active");
+            }
+            navLinks.forEach(link => {
+                const linkPage = link.getAttribute("data-page");
+                if (linkPage === pageName) {
+                    link.classList.add("active");
+                } else {
+                    link.classList.remove("active");
+                }
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault();
+                const page = this.getAttribute("data-page");
+                if (page) switchPage(page);
+            });
+        });
+
+        const bellBtn = document.getElementById("notifyBell");
+        if (bellBtn) {
+            bellBtn.addEventListener("click", function() {
+                alert("Get alerts for new movies and trailers! (demo)");
+            });
+        }
+        switchPage("home");
+    }
+
+    function init() {
+        buildCarousel();
+        buildTrending();
+        buildComingSoon();
+        bindActions();
+        setupNavigation();
+        initSwiper();
+    }
+
+    loadSectionedLayout().then(init).catch(console.error);
+</script>
+</body>
+</html>
