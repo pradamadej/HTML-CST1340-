@@ -46,29 +46,54 @@
     }
 
     // ========== MOVIE DATA ==========
-    const carouselMovies = [
-        { title: "Dune: Part Two", year: "2024", rating: "8.6", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/8b8d8wLfZ6pZ0UwYqK3Qpz7c1M.jpg", fallback: "https://placehold.co/600x400/1a1a24/9b87f5?text=Dune+2" },
-        { title: "Gladiator 2", year: "2024", rating: "8.1", genre: "Action", img: "https://image.tmdb.org/t/p/w780/2qN1D2zS5hUQ1nW4kRfQvG2Yj.jpg", fallback: "https://placehold.co/600x400/1a1a24/c084fc?text=Gladiator+2" },
-        { title: "Joker: Folie à Deux", year: "2024", rating: "8.7", genre: "Drama", img: "https://image.tmdb.org/t/p/w780/4bP7YJvYqGqVqRjvZcXQpWm3L.jpg", fallback: "https://placehold.co/600x400/1a1a24/f5b042?text=Joker+2" },
-        { title: "Deadpool & Wolverine", year: "2024", rating: "8.4", genre: "Action", img: "https://image.tmdb.org/t/p/w780/8cdWjvZcUx3X7cR9qYkYvU6Kj.jpg", fallback: "https://placehold.co/600x400/1a1a24/ff4d6d?text=Deadpool" },
-        { title: "Mickey 17", year: "2025", rating: "7.8", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/3rRkL9VqE8WfQn6bS7dYyUJkM.jpg", fallback: "https://placehold.co/600x400/1a1a24/86efac?text=Mickey+17" }
-    ];
+    let carouselMovies = [];
+    let trendingMovies = [];
+    let comingMovies = [];
 
-    const trendingMovies = [
-        { title: "Oppenheimer", year: "2023", rating: "8.9", genre: "Biography", img: "https://image.tmdb.org/t/p/w780/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg", fallback: "https://placehold.co/600x400/1a1a24/ffb347?text=Oppenheimer" },
-        { title: "Poor Things", year: "2023", rating: "8.2", genre: "Comedy", img: "https://image.tmdb.org/t/p/w780/6dH7D2mR8QvZcXkLpNqWwYfG.jpg", fallback: "https://placehold.co/600x400/1a1a24/db7f67?text=Poor+Things" },
-        { title: "The Batman 2", year: "2025", rating: "—", genre: "Crime", img: "https://image.tmdb.org/t/p/w780/74xT7VcSqLpYQpXpVjWjJjYzK.jpg", fallback: "https://placehold.co/600x400/1a1a24/9d4edd?text=Batman+2" },
-        { title: "Furiosa", year: "2024", rating: "8.0", genre: "Action", img: "https://image.tmdb.org/t/p/w780/8tZ6yUjZcQqNlNvXrCbMvA2f.jpg", fallback: "https://placehold.co/600x400/1a1a24/ffb347?text=Furiosa" }
-    ];
+    function makePlaceholderPoster(title, color = '1a1a24', textColor = '9b87f5') {
+        const safe = encodeURIComponent(title.replace(/\s+/g, '+'));
+        return `https://placehold.co/600x400/${color}/${textColor}?text=${safe}`;
+    }
 
-    const comingMovies = [
-        { title: "Avatar: Fire and Ash", release: "Dec 19, 2025", genre: "Sci-Fi", img: "https://image.tmdb.org/t/p/w780/7bWxAsNPvU6P1cJxTzqYvNqF.jpg", fallback: "https://placehold.co/600x400/15202b/3b82f6?text=Avatar+3" },
-        { title: "Snow White", release: "Mar 21, 2025", genre: "Fantasy", img: "https://image.tmdb.org/t/p/w780/7G8zKjTpYVqUwXeRcVbNnHjM.jpg", fallback: "https://placehold.co/600x400/2e2740/facc15?text=Snow+White" },
-        { title: "Thunderbolts*", release: "May 2, 2025", genre: "Superhero", img: "https://image.tmdb.org/t/p/w780/5yEoMqWpVxQzNnJjKkLlZzXc.jpg", fallback: "https://placehold.co/600x400/1e1b2f/ef4444?text=Thunderbolts" },
-        { title: "Mission: Impossible 8", release: "May 23, 2025", genre: "Action", img: "https://image.tmdb.org/t/p/w780/6xKjEwVbYpFqRmZcXvBnNlYt.jpg", fallback: "https://placehold.co/600x400/242034/eab308?text=MI8" },
-        { title: "Wicked: Part Two", release: "Nov 26, 2025", genre: "Musical", img: "https://image.tmdb.org/t/p/w780/3vPcJtVwWbYkFqLmNpZxRcVb.jpg", fallback: "https://placehold.co/600x400/1e293b/ec489a?text=Wicked+2" },
-        { title: "Fantastic Four", release: "Jul 25, 2025", genre: "Superhero", img: "https://image.tmdb.org/t/p/w780/9jZcNqWpVbYxRkLmNpQzYvXc.jpg", fallback: "https://placehold.co/600x400/0f172a/06b6d4?text=Fantastic+Four" }
-    ];
+    function prettyDate(isoDate) {
+        if (!isoDate) return 'TBA';
+        const d = new Date(isoDate);
+        if (Number.isNaN(d.getTime())) return isoDate;
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function parseMovieNode(node) {
+        const title = node.querySelector('title')?.textContent.trim() || 'Untitled';
+        const release = node.querySelector('release_date')?.textContent.trim() || null;
+        const year = release ? (release.slice(0, 4)) : 'Now';
+        const rating = node.querySelector('rating')?.textContent.trim() || '—';
+        const genre = node.querySelector('genre > type')?.textContent.trim() || 'Unknown';
+
+        return {
+            title,
+            year,
+            rating,
+            genre,
+            release: prettyDate(release),
+            img: makePlaceholderPoster(title),
+            fallback: makePlaceholderPoster(title, '2e2e3a', 'f5f5f5')
+        };
+    }
+
+    async function loadMovieDataFromXml() {
+        const response = await fetch('movies.xml');
+        if (!response.ok) throw new Error('Could not load movies.xml');
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+
+        const nowShowing = Array.from(xmlDoc.querySelectorAll('now_showing > movie')).map(parseMovieNode);
+        const aboutComing = Array.from(xmlDoc.querySelectorAll('coming_soon > movie')).map(parseMovieNode);
+
+        carouselMovies = nowShowing.slice(0, 5);
+        trendingMovies = nowShowing.slice(0, 4);
+        comingMovies = aboutComing;
+    }
 
     function setImg(imgElement, primary, fallback) {
         imgElement.src = primary;
@@ -257,7 +282,14 @@
         initSwiper();
     }
 
-    loadSectionedLayout().then(init).catch(console.error);
+    loadSectionedLayout()
+        .then(() => loadMovieDataFromXml())
+        .then(init)
+        .catch(err => {
+            console.error(err);
+            // If XML fails, still initialize with whatever data is present
+            init();
+        });
 </script>
 </body>
 </html>

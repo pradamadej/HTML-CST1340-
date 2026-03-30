@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="cinema.xsl"?>
+<!DOCTYPE cinema SYSTEM "cinema.dtd">
+
+<cinema>
+    <now_showing>
+    <movie id="M001">
+        <title>Paprika</title>
+        <screen>Screen 1</screen>
+        <genre>
+            <type>Animation</type>
+            <type>Thriller</type>
+            <type>Sci-fi</type>
+        </genre>
+        <duration>90 mins</duration>
+        <rating>18</rating>
+        <format>IMAX</format>
+        <language>
+            <lang>Japanese</lang>
+            <lang>English</lang>
+        </language>
+        <subtitles>Yes</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            When a machine that allows therapists to enter their patient's dreams is stolen, all hell breaks loose.
+            Only a young female therapist can stop it and recover it before damage is done.
+        </description>
+    </movie>
+
+    <movie id="M002">
+        <title>Sinners</title>
+        <screen>Screen 2</screen>
+        <genre>
+            <type>Thriller</type>
+            <type>Action</type>
+            <type>Horror</type>
+        </genre>
+        <duration>138 mins</duration>
+        <rating>18</rating>
+        <format>IMAX</format>
+        <language>
+            <lang>English</lang>
+        </language>
+        <subtitles>No</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            Trying to leave their troubled lives behind, twin brothers return to their hometown to start again,
+            only to discover that an even greater evil is waiting to welcome them back.
+        </description>
+    </movie>
+
+    <movie id="M003">
+        <title>One Battle After Another</title>
+        <screen>Screen 3</screen>
+        <genre>
+            <type>Thriller</type> 
+            <type>Comedy</type>
+            <type>Action</type>
+            <type>Crime</type>
+        </genre>
+        <duration>162 mins</duration>
+        <rating>18</rating>
+        <format>IMAX</format>
+        <language>
+            <lang>English</lang>
+        </language>
+        <subtitles>No</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            When their evil nemesis resurfaces after 16 years, a band of ex-revolutionaries reunite to rescue 
+            the daughter of one of their own. 
+        </description>
+    </movie>
+
+    <movie id="M004">
+        <title>No Other Choice</title>
+        <screen>Screen 4</screen>
+        <genre>
+            <type>Crime</type>
+            <type>Comedy</type>
+            <type>Thriller</type>
+        </genre>
+        <duration>139 mins</duration>
+        <rating>18</rating>
+        <format>3D</format>
+        <language>
+            <lang>Korean</lang>
+            <lang>English</lang>
+        </language>
+        <subtitles>Yes</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            After being laid off and humiliated by a ruthless job market, a veteran paper mill manager descends
+            into violence in a desperate bid to reclaim his dignity. 
+        </description>
+    </movie>
+
+    <movie id="M005">
+        <title>Avatar: The Way of Water</title>
+        <screen>Screen 5</screen>
+        <genre>
+            <type>Sci-fi</type>
+            <type>Action</type>
+            <type>Adventure</type>
+        </genre>
+        <duration>192 mins</duration>
+        <rating>13</rating>
+        <format>3D</format>
+        <language>
+            <lang>English</lang>
+        </language>
+        <subtitles>No</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            Set more than a decade after the events of Avatar, learn the story of the Sully family, the trouble 
+            that follows them, the lengths they take to keep each other safe, the battles they fight to stay alive, 
+            and the tragedies they endure. 
+        </description>
+    </movie>
+
+    <movie id="M006">
+        <title>Coraline</title>
+        <screen>Screen 6</screen>
+        <genre>
+            <type>Animation</type>
+            <type>Fantasy</type>
+            <type>Horror</type>
+        </genre>
+        <duration>100 mins</duration>
+        <rating>7</rating>
+        <format>3D</format>
+        <language>
+            <lang>English</lang>
+        </language>
+        <subtitles>No</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            Wandering her rambling old house in her boring town, 11-year-old Coraline discovers 
+            a hidden door to a strangely idealised version of her life. 
+        </description>
+    </movie>
+
+    <movie id="M007">
+        <title>Sentimental Value</title>
+        <screen>Screen 7</screen>
+        <genre>
+            <type>Drama</type>
+        </genre>
+        <duration>133 mins</duration>
+        <rating>18</rating>
+        <format>2D</format>
+        <language>
+            <lang>English</lang>
+            <lang>Swedish</lang>
+            <lang>Norwegian</lang>
+            <lang>German</lang>
+        </language>
+        <subtitles>Yes</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, 
+            a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film.
+        </description>
+    </movie>
+
+    <movie id="M008">
+        <title>Howl's Moving Castle</title>
+        <screen>Screen 8</screen>
+        <genre>
+            <type>Animation</type>
+            <type>Adventure</type>
+            <type>Fantasy</type>
+        </genre>
+        <duration>119 mins</duration>
+        <rating>7</rating>
+        <format>2D</format>
+        <language>
+            <lang>Japanese</lang>
+        </language>
+        <subtitles>Yes</subtitles>
+
+        <showtimes>
+            <time>12:45</time>
+            <time>18:45</time>
+            <time>21:45</time>
+        </showtimes>
+
+        <ticket>
+            <child>6.00</child>
+            <adult>12.00</adult>
+        </ticket>
+
+        <description>
+            Sophie, a young milliner, is turned into an elderly witch who enters her shop and curses her.
+            She encounters a wizard named Howl and gets caught up in his resistance to fighting for the king. 
+        </description>
+    </movie>
+    </now_showing>
+
+    <coming_soon>
+    <movie id="M009">
+        <title>Spider-Man: Brand New Day</title>
+        <screen>TBA</screen>
+        <genre>
+            <type>Adventure</type>
+            <type>Sci-fi</type>
+        </genre>
+        <rating>13</rating>
+        <format>IMAX</format>
+        <release_date>2026-07-31</release_date>
+        <language>
+            <lang>English</lang>
+        </language>
+
+        <description>
+            Peter Parker, four years after No Way Home, living alone as a full-time superhero having erased himself 
+            from his loved ones' memories. The pressure sparks a surprising physical evolution that threatens his 
+            existence, even as a strange new pattern of crimes gives rise to one of the most powerful threats he 
+            has ever faced.  
+        </description>
+    </movie>
+
+    <movie id="M010">
+        <title>Dune: Part 3</title>
+        <screen>TBA</screen>
+        <genre>
+            <type>Sci-fi</type>
+            <type>Adventure</type>
+        </genre>
+        <rating>13</rating>
+        <format>3D</format>
+        <release_date>2026-12-18</release_date>
+        <language>
+            <lang>English</lang>
+        </language>
+
+        <description>
+            Will the prophecy come true and will Paul Maud'Dib Atreides be the true messiah? 
+            Betrayal, guilt and destiny but who will lead us to the “Promised Land”? 
+        </description>
+    </movie>
+    
+    </coming_soon>
+
+</cinema>    
