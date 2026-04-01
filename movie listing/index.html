@@ -62,6 +62,19 @@
         return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
     }
 
+    const movieCovers = {
+        'Paprika': 'https://image.tmdb.org/t/p/w780/sg7jLqrGkHEtfQWS4Xj8NJc0hVu.jpg',
+        'Sinners': 'https://image.tmdb.org/t/p/w780/qiq0vIO16Pw5QWDLhYBue5pF0c1.jpg',
+        'One Battle After Another': 'https://image.tmdb.org/t/p/w780/nseNF6Fh2e0xAbbP2g7b1vIOpHt.jpg',
+        'No Other Choice': 'https://image.tmdb.org/t/p/w780/hopGtUhGFnJ9Y8GY38t7puehXga.jpg',
+        'Avatar: The Way of Water': 'https://image.tmdb.org/t/p/w780/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
+        'Coraline': 'https://image.tmdb.org/t/p/w780/pEJEEe5uRj5nF4hNYZ1sVdCEbLt.jpg',
+        'Sentimental Value': 'https://image.tmdb.org/t/p/w780/k0Rqn5EAM1LjaY6XsXWg8L7P1rA.jpg',
+        "Howl's Moving Castle": 'https://image.tmdb.org/t/p/w780/yI5kM0b960x7Gp3mF551A0Bc9C7.jpg',
+        'Spider-Man: Brand New Day': 'https://image.tmdb.org/t/p/w780/2gHgh6NxdISslc1KfY2cfN7MN2F.jpg',
+        'Dune: Part 3': 'https://image.tmdb.org/t/p/w780/h6Uh9loHj22Z7oZE7ZAdILllYQP.jpg'
+    };
+
     function parseMovieNode(node) {
         const title = node.querySelector('title')?.textContent.trim() || 'Untitled';
         const release = node.querySelector('release_date')?.textContent.trim() || null;
@@ -69,14 +82,17 @@
         const rating = node.querySelector('rating')?.textContent.trim() || '—';
         const genre = node.querySelector('genre > type')?.textContent.trim() || 'Unknown';
 
+        const img = movieCovers[title] || makePlaceholderPoster(title);
+        const fallback = makePlaceholderPoster(title, '2e2e3a', 'f5f5f5');
+
         return {
             title,
             year,
             rating,
             genre,
             release: prettyDate(release),
-            img: makePlaceholderPoster(title),
-            fallback: makePlaceholderPoster(title, '2e2e3a', 'f5f5f5')
+            img,
+            fallback
         };
     }
 
