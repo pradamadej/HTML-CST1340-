@@ -16,10 +16,7 @@
 
 <!-- Placeholder for external structure sections -->
 <div id="site-header"></div>
-<main id="site-content">
-    <div id="site-content-home"></div>
-    <div id="site-content-coming"></div>
-</main>
+<main id="site-content"></main>
 <div id="site-footer"></div>
 
 <!-- ========== SCRIPTS ========== -->
@@ -37,12 +34,25 @@
     }
 
     async function loadSectionedLayout() {
-        await Promise.all([
-            loadPartial('site-header', 'partials/header.html'),
-            loadPartial('site-content-home', 'partials/home.html'),
-            loadPartial('site-content-coming', 'partials/coming.html'),
-            loadPartial('site-footer', 'partials/footer.html')
-        ]);
+        try {
+            const [headerRes, homeRes, comingRes, footerRes] = await Promise.all([
+                fetch('partials/header.html'),
+                fetch('partials/home.html'),
+                fetch('partials/coming.html'),
+                fetch('partials/footer.html')
+            ]);
+
+            const headerHtml = await headerRes.text();
+            const homeHtml = await homeRes.text();
+            const comingHtml = await comingRes.text();
+            const footerHtml = await footerRes.text();
+
+            document.getElementById('site-header').innerHTML = headerHtml;
+            document.getElementById('site-content').innerHTML = homeHtml + comingHtml;
+            document.getElementById('site-footer').innerHTML = footerHtml;
+        } catch (err) {
+            console.error('Error loading layout:', err);
+        }
     }
 
     // ========== MOVIE DATA ==========
