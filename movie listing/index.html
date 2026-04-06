@@ -85,9 +85,18 @@
 
     function buildMoviesTable() {
         const tableBody = document.getElementById("moviesTableBody");
-        if (!tableBody) return;
+        if (!tableBody) {
+            console.warn('Table body element not found');
+            return;
+        }
         
         tableBody.innerHTML = "";
+        console.log("Building movies table with", moviesData.length, "movies");
+        
+        if (moviesData.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">No movies found</td></tr>';
+            return;
+        }
         
         for (let movie of moviesData) {
             const row = tableBody.insertRow();
@@ -100,6 +109,7 @@
                 <td><em>${movie.showtimes}</em></td>
             `;
         }
+        console.log("Movies table built successfully");
     }
 
     function setupNavigation() {
