@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <!-- Font Awesome (for icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -22,17 +23,6 @@
 <!-- ========== SCRIPTS ========== -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    async function loadPartial(container, url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`${url} load failed`);
-            document.getElementById(container).innerHTML = await response.text();
-        } catch (err) {
-            console.error(err);
-            document.getElementById(container).innerHTML = `<p class="error">Failed to load ${url}</p>`;
-        }
-    }
-
     async function loadSectionedLayout() {
         try {
             const [headerRes, homeRes, comingRes, footerRes] = await Promise.all([
@@ -56,203 +46,60 @@
     }
 
     // ========== MOVIE DATA ==========
-    let carouselMovies = [];
-    let trendingMovies = [];
-    let comingMovies = [];
+    let moviesData = [];
 
-    function makePlaceholderPoster(title, color = '1a1a24', textColor = '9b87f5') {
-        const safe = encodeURIComponent(title.replace(/\s+/g, '+'));
-        return `https://placehold.co/600x400/${color}/${textColor}?text=${safe}`;
-    }
+    async function loadMoviesFromXml() {
+        try {
+            const response = await fetch('movies.xml');
+            if (!response.ok) throw new Error('Could not load movies.xml');
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
 
-    function prettyDate(isoDate) {
-        if (!isoDate) return 'TBA';
-        const d = new Date(isoDate);
-        if (Number.isNaN(d.getTime())) return isoDate;
-        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-    }
-
-    const movieCovers = {
-        'Paprika': 'https://upload.wikimedia.org/wikipedia/en/1/12/Paprika_%282006_film%29_poster.jpg',
-        'Sinners': 'https://via.placeholder.com/780x1170?text=Sinners',
-        'One Battle After Another': 'https://via.placeholder.com/780x1170?text=One+Battle+After+Another',
-        'No Other Choice': 'https://via.placeholder.com/780x1170?text=No+Other+Choice',
-        'Avatar: The Way of Water': 'https://image.tmdb.org/t/p/w780/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg',
-        'Coraline': 'https://upload.wikimedia.org/wikipedia/en/7/7a/Coraline_poster.jpg',
-        'Sentimental Value': 'https://via.placeholder.com/780x1170?text=Sentimental+Value',
-        "Howl's Moving Castle": 'https://upload.wikimedia.org/wikipedia/en/a/a0/Howls-moving-castleposter.jpg',
-        'Spider-Man: Brand New Day': 'https://via.placeholder.com/780x1170?text=Spider-Man+Brand+New+Day',
-        'Dune: Part 3': 'https://via.placeholder.com/780x1170?text=Dune+Part+3'
-    };
-
-    function parseMovieNode(node) {
-        const title = node.querySelector('title')?.textContent.trim() || 'Untitled';
-        const release = node.querySelector('release_date')?.textContent.trim() || null;
-        const year = release ? (release.slice(0, 4)) : 'Now';
-        const rating = node.querySelector('rating')?.textContent.trim() || '—';
-        const genre = node.querySelector('genre > type')?.textContent.trim() || 'Unknown';
-
-        const img = movieCovers[title] || makePlaceholderPoster(title);
-        const fallback = makePlaceholderPoster(title, '2e2e3a', 'f5f5f5');
-
-        return {
-            title,
-            year,
-            rating,
-            genre,
-            release: prettyDate(release),
-            img,
-            fallback
-        };
-    }
-
-    async function loadMovieDataFromXml() {
-        const response = await fetch('movies.xml');
-        if (!response.ok) throw new Error('Could not load movies.xml');
-        const xmlText = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
-
-        const nowShowing = Array.from(xmlDoc.querySelectorAll('now_showing > movie')).map(parseMovieNode);
-        const aboutComing = Array.from(xmlDoc.querySelectorAll('coming_soon > movie')).map(parseMovieNode);
-
-        carouselMovies = nowShowing.slice(0, 5);
-        trendingMovies = nowShowing.slice(0, 4);
-        comingMovies = aboutComing;
-    }
-
-    function setImg(imgElement, primary, fallback) {
-        imgElement.src = primary;
-        imgElement.onerror = function() {
-            if (imgElement.src !== fallback) {
-                imgElement.src = fallback;
+            if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
+                throw new Error('XML parsing error');
             }
-        };
-    }
 
-    function buildCarousel() {
-        const wrapper = document.getElementById("carouselList");
-        if (!wrapper) return;
-        wrapper.innerHTML = "";
-        for (let m of carouselMovies) {
-            const slide = document.createElement("div");
-            slide.className = "swiper-slide";
-            slide.innerHTML = `
-                <div class="movie-card">
-                    <img class="carousel-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
-                    <div class="movie-info">
-                        <h3>${m.title}</h3>
-                        <div class="movie-details">
-                            <span>${m.year}</span>
-                            <span>${m.genre}</span>
-                            <span class="rating"><i class="fas fa-star"></i> ${m.rating}</span>
-                        </div>
-                        <div class="trailer-btn">Watch trailer <i class="fas fa-play"></i></div>
-                    </div>
-                </div>
-            `;
-            wrapper.appendChild(slide);
-        }
-        const imgs = document.querySelectorAll(".carousel-img");
-        imgs.forEach(img => {
-            const src = img.getAttribute("data-src");
-            const fall = img.getAttribute("data-fallback");
-            setImg(img, src, fall);
-        });
-    }
-
-    function buildTrending() {
-        const grid = document.getElementById("trendingGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
-        for (let m of trendingMovies) {
-            const card = document.createElement("div");
-            card.className = "grid-card";
-            card.innerHTML = `
-                <img class="grid-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
-                <div class="card-info">
-                    <h3>${m.title}</h3>
-                    <div class="movie-details">
-                        <span>${m.year}</span>
-                        <span>${m.genre}</span>
-                        ${m.rating !== "—" ? `<span class="rating"><i class="fas fa-star"></i> ${m.rating}</span>` : ""}
-                    </div>
-                    <div class="trailer-btn" style="margin-top:8px;">Details</div>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
-        const gridImgs = document.querySelectorAll("#trendingGrid .grid-img");
-        gridImgs.forEach(img => {
-            const src = img.getAttribute("data-src");
-            const fall = img.getAttribute("data-fallback");
-            setImg(img, src, fall);
-        });
-    }
-
-    function buildComingSoon() {
-        const grid = document.getElementById("comingGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
-        for (let m of comingMovies) {
-            const card = document.createElement("div");
-            card.className = "grid-card";
-            card.innerHTML = `
-                <img class="coming-img" data-src="${m.img}" data-fallback="${m.fallback}" alt="${m.title}">
-                <div class="card-info">
-                    <div class="release-badge"><i class="far fa-calendar-alt"></i> ${m.release}</div>
-                    <h3>${m.title}</h3>
-                    <div class="movie-details">${m.genre}</div>
-                    <button class="remind-button" data-movie="${m.title}"><i class="far fa-bell"></i> Remind me</button>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
-        const comingImgs = document.querySelectorAll("#comingGrid .coming-img");
-        comingImgs.forEach(img => {
-            const src = img.getAttribute("data-src");
-            const fall = img.getAttribute("data-fallback");
-            setImg(img, src, fall);
-        });
-        document.querySelectorAll(".remind-button").forEach(btn => {
-            btn.addEventListener("click", function(e) {
-                e.stopPropagation();
-                const movieName = this.getAttribute("data-movie");
-                alert("Reminder set for " + movieName + "! We'll notify you.");
+            // Load now_showing movies
+            moviesData = Array.from(xmlDoc.querySelectorAll('now_showing > movie')).map(node => {
+                const showtimes = Array.from(node.querySelectorAll('showtimes > time'))
+                    .map(t => t.textContent.trim())
+                    .join(', ');
+                
+                return {
+                    id: node.getAttribute('id'),
+                    title: node.querySelector('title')?.textContent.trim() || 'Unknown',
+                    genre: node.querySelector('genre > type')?.textContent.trim() || 'Unknown',
+                    rating: node.querySelector('rating')?.textContent.trim() || '—',
+                    duration: node.querySelector('duration')?.textContent.trim() || '—',
+                    format: node.querySelector('format')?.textContent.trim() || '—',
+                    showtimes: showtimes || '—'
+                };
             });
-        });
+
+            console.log(`Loaded ${moviesData.length} movies from XML`);
+        } catch (err) {
+            console.error('Error loading movies:', err);
+        }
     }
 
-    function bindActions() {
-        document.body.addEventListener("click", function(e) {
-            if (e.target.closest(".trailer-btn")) {
-                const btn = e.target.closest(".trailer-btn");
-                const card = btn.closest(".movie-card") || btn.closest(".grid-card");
-                let title = "this movie";
-                if (card) {
-                    const titleEl = card.querySelector("h3");
-                    if (titleEl) title = titleEl.innerText;
-                }
-                alert("🎬 Trailer preview for " + title + " - coming soon!");
-            }
-        });
-    }
-
-    let swiperInstance = null;
-    function initSwiper() {
-        if (swiperInstance) swiperInstance.destroy(true, true);
-        swiperInstance = new Swiper(".movie-carousel", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            pagination: { el: ".swiper-pagination", clickable: true },
-            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-            breakpoints: {
-                640: { slidesPerView: 2 },
-                1000: { slidesPerView: 3 }
-            },
-            autoplay: { delay: 4000, disableOnInteraction: false }
-        });
+    function buildMoviesTable() {
+        const tableBody = document.getElementById("moviesTableBody");
+        if (!tableBody) return;
+        
+        tableBody.innerHTML = "";
+        
+        for (let movie of moviesData) {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td><strong>${movie.title}</strong></td>
+                <td>${movie.genre}</td>
+                <td>${movie.rating}</td>
+                <td>${movie.duration}</td>
+                <td>${movie.format}</td>
+                <td><em>${movie.showtimes}</em></td>
+            `;
+        }
     }
 
     function setupNavigation() {
@@ -275,13 +122,10 @@
             if (pageName === "home") {
                 homePageDiv.classList.add("active");
                 comingPageDiv.classList.remove("active");
-                setTimeout(() => {
-                    if (swiperInstance) swiperInstance.update();
-                    else initSwiper();
-                }, 50);
             } else if (pageName === "coming") {
                 homePageDiv.classList.remove("active");
                 comingPageDiv.classList.add("active");
+                buildMoviesTable();
             }
             navLinks.forEach(link => {
                 const linkPage = link.getAttribute("data-page");
@@ -305,28 +149,25 @@
         const bellBtn = document.getElementById("notifyBell");
         if (bellBtn) {
             bellBtn.addEventListener("click", function() {
-                alert("Get alerts for new movies and trailers! (demo)");
+                alert("Subscribe to CineX alerts for new movie releases and special offers!");
             });
         }
         switchPage("home");
     }
 
     function init() {
-        buildCarousel();
-        buildTrending();
-        buildComingSoon();
-        bindActions();
+        buildMoviesTable();
         setupNavigation();
-        initSwiper();
     }
 
     loadSectionedLayout()
-        .then(() => loadMovieDataFromXml())
+        .then(() => loadMoviesFromXml())
         .then(init)
         .catch(err => {
-            console.error(err);
-            // If XML fails, still initialize with whatever data is present
+            console.error("Initialization error:", err);
             init();
+        });
+</script>
         });
 </script>
 </body>
