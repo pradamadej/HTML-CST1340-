@@ -260,7 +260,18 @@
         const comingPageDiv = document.getElementById("comingPage");
         const navLinks = document.querySelectorAll(".nav-link");
 
+        console.log("Setting up navigation...");
+        console.log("homePage exists:", !!homePageDiv);
+        console.log("comingPage exists:", !!comingPageDiv);
+        console.log("navLinks found:", navLinks.length);
+
+        if (!homePageDiv || !comingPageDiv) {
+            console.error("Page elements not found! Check HTML structure.");
+            return;
+        }
+
         function switchPage(pageName) {
+            console.log("Switching to page:", pageName);
             if (pageName === "home") {
                 homePageDiv.classList.add("active");
                 comingPageDiv.classList.remove("active");
@@ -286,6 +297,7 @@
             link.addEventListener("click", function(e) {
                 e.preventDefault();
                 const page = this.getAttribute("data-page");
+                console.log("Nav link clicked, page:", page);
                 if (page) switchPage(page);
             });
         });
