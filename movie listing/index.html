@@ -80,12 +80,13 @@
                 const rating = movie.querySelector('rating')?.textContent || '—';
                 const duration = movie.querySelector('duration')?.textContent || '—';
                 const format = movie.querySelector('format')?.textContent || '—';
+                const image = movie.querySelector('image')?.textContent || 'images/placeholder.jpg';
                 
                 const times = Array.from(movie.querySelectorAll('showtimes > time'))
                     .map(t => t.textContent.trim())
                     .join(', ') || '—';
                 
-                return { title, genre, rating, duration, format, showtimes: times };
+                return { title, genre, rating, duration, format, showtimes: times, image };
             });
             
             console.log(`✓ Loaded ${moviesData.length} movies`);
@@ -126,22 +127,6 @@
         return document.getElementById('moviesTableBody');
     }
 
-    function getPosterUrl(title) {
-        const posterMap = {
-            'Paprika': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Paprika',
-            'Sinners': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Sinners',
-            'One Battle After Another': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=One+Battle',
-            'No Other Choice': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=No+Other+Choice',
-            'Avatar: The Way of Water': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Avatar',
-            'Coraline': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Coraline',
-            'Sentimental Value': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Sentimental+Value',
-            "Howl's Moving Castle": 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Howl+Castle',
-            'Spider-Man: Brand New Day': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Spider-Man',
-            'Dune: Part 3': 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Dune+3'
-        };
-        return posterMap[title] || 'https://via.placeholder.com/320x450/1f1f29/ffffff?text=Now+Showing';
-    }
-
     function buildHomeCarousel() {
         const carouselWrapper = document.getElementById('nowShowingCarousel');
         if (!carouselWrapper) {
@@ -151,7 +136,7 @@
         carouselWrapper.innerHTML = moviesData.map(movie => `
             <div class="swiper-slide">
                 <div class="movie-card">
-                    <img src="${getPosterUrl(movie.title)}" alt="${movie.title} poster">
+                    <img src="${movie.image}" alt="${movie.title} poster">
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
                         <div class="movie-details">
