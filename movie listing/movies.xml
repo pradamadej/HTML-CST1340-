@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="cinema.xsl"?>
-<!DOCTYPE cinema SYSTEM "cinema.dtd">
+<?xml-stylesheet type="text/xsl" href="cinemapt2.xsl"?>
+
 
 <cinema>
     <now_showing>
@@ -14,6 +14,7 @@
         </genre>
         <duration>90 mins</duration>
         <rating>18</rating>
+        <image>images/paprika.jpg</image>
         <format>IMAX</format>
         <language>
             <lang>Japanese</lang>
@@ -48,6 +49,7 @@
         </genre>
         <duration>138 mins</duration>
         <rating>18</rating>
+        <image>images/sinners.jpg</image>
         <format>IMAX</format>
         <language>
             <lang>English</lang>
@@ -82,6 +84,7 @@
         </genre>
         <duration>162 mins</duration>
         <rating>18</rating>
+        <image>images/One Battle After Another.jpeg</image>
         <format>IMAX</format>
         <language>
             <lang>English</lang>
@@ -115,6 +118,7 @@
         </genre>
         <duration>139 mins</duration>
         <rating>18</rating>
+        <image>images/No_Other_Choice.jpg</image>
         <format>3D</format>
         <language>
             <lang>Korean</lang>
@@ -149,6 +153,7 @@
         </genre>
         <duration>192 mins</duration>
         <rating>13</rating>
+        <image>images/Avatar_thewayofwater.jpeg</image>
         <format>3D</format>
         <language>
             <lang>English</lang>
@@ -183,6 +188,7 @@
         </genre>
         <duration>100 mins</duration>
         <rating>7</rating>
+        <image>images/Coraline.webp</image>
         <format>3D</format>
         <language>
             <lang>English</lang>
@@ -214,6 +220,7 @@
         </genre>
         <duration>133 mins</duration>
         <rating>18</rating>
+        <image>images/sentimental value.jpeg</image>
         <format>2D</format>
         <language>
             <lang>English</lang>
@@ -250,6 +257,7 @@
         </genre>
         <duration>119 mins</duration>
         <rating>7</rating>
+        <image>images/Howl's_Moving_Castle.jpg</image>
         <format>2D</format>
         <language>
             <lang>Japanese</lang>
@@ -273,7 +281,7 @@
         </description>
     </movie>
     </now_showing>
-
+    
     <coming_soon>
     <movie id="M009">
         <title>Spider-Man: Brand New Day</title>
@@ -283,6 +291,7 @@
             <type>Sci-fi</type>
         </genre>
         <rating>13</rating>
+        <image>images/spiderman.jpeg</image>
         <format>IMAX</format>
         <release_date>2026-07-31</release_date>
         <language>
@@ -305,6 +314,7 @@
             <type>Adventure</type>
         </genre>
         <rating>13</rating>
+        <image>images/dune3.jpg</image>
         <format>3D</format>
         <release_date>2026-12-18</release_date>
         <language>
@@ -319,4 +329,4 @@
     
     </coming_soon>
 
-</cinema>    
+</cinema>
