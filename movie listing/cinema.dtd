@@ -1,0 +1,43 @@
+<!--contains both sections of the cinema-->
+<!ELEMENT cinema (now_showing, coming_soon)>
+
+<!--Sections of movies-->
+<!ELEMENT now_showing (movie+)>
+<!ELEMENT coming_soon (movie+)>
+
+<!-- Movie structure, Some elements are optional (?) because coming_soon movies don’t have all fields-->
+<!ELEMENT movie (title, screen, genre, duration?, rating, image, format, language, subtitles?, showtimes?, ticket?, release_date?, description)>
+<!ATTLIST movie id ID #REQUIRED>
+
+<!-- Basic movie info -->
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT screen (#PCDATA)>
+
+<!-- Genre structure -->
+<!ELEMENT genre (type+)>
+<!ELEMENT type (#PCDATA)>
+
+<!-- Movie details -->
+<!ELEMENT duration (#PCDATA)>
+<!ELEMENT rating (#PCDATA)>
+<!ELEMENT image (#PCDATA)>
+<!ELEMENT format (#PCDATA)>
+
+<!-- Language info -->
+<!ELEMENT language (lang+)>
+<!ELEMENT lang (#PCDATA)>
+
+<!ELEMENT subtitles (#PCDATA)>
+
+<!ELEMENT showtimes (time+)>
+<!ELEMENT time (#PCDATA)>
+
+<!-- Ticket pricing -->
+<!ELEMENT ticket (child, adult)>
+<!ELEMENT child (#PCDATA)>
+<!ELEMENT adult (#PCDATA)>
+
+<!-- Release date (Coming soon specific) -->
+<!ELEMENT release_date (#PCDATA)>
+
+<!ELEMENT description (#PCDATA)>
