@@ -1,26 +1,87 @@
-<!-- Home Page -->
+<!-- Home Page - Cinema Information -->
 <div id="homePage" class="page active">
     <div class="container">
         <div class="hero">
-            <h1>Movies <span class="purple-text">worth watching</span></h1>
-            <p>Explore top picks and upcoming hits</p>
+            <h1>Welcome to <span class="purple-text">CineX</span></h1>
+            <p>Your Premier Destination for Cinema Excellence</p>
         </div>
 
-        <!-- Carousel Section -->
+        <!-- About Section (Paragraph) -->
+        <div class="info-section">
+            <h2>About Our Cinema</h2>
+            <p>CineX has been delighting movie enthusiasts since 2015. We pride ourselves on offering a world-class cinema experience with state-of-the-art projection technology, premium sound systems, and comfortable seating. Our knowledgeable staff is dedicated to helping you find the perfect film. Whether you're catching the latest blockbuster, an independent gem, or a classic re-release, CineX provides an unforgettable cinematic experience. Visit us today and discover why we're the most loved cinema in the region.</p>
+        </div>
+
+        <!-- Now Showing Carousel -->
         <div class="carousel-section">
-            <div class="swiper movie-carousel">
-                <div class="swiper-wrapper" id="carouselList"></div>
-                <div class="swiper-pagination"></div>
-                <div class="swiper-button-next"></div>
+            <div class="section-title">
+                <h2>Now Showing</h2>
+                <a href="#" class="trailer-btn nav-link" data-page="coming">Browse all</a>
+            </div>
+            <div class="swiper now-showing-swiper">
+                <div class="swiper-wrapper" id="nowShowingCarousel"></div>
                 <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
 
-        <!-- Trending Section -->
-        <div class="section-title">
-            <h2>🔥 Trending now</h2>
-            <span style="font-size:0.85rem;">Most popular</span>
+        <!-- Contact Information -->
+        <div class="info-section">
+            <h2>Contact & Location</h2>
+            <div class="contact-info">
+                <p><strong>Address:</strong> 456 Film Street, Cinema City, CC1 5XY</p>
+                <p><strong>Phone:</strong> (555) 987-6543</p>
+                <p><strong>Email:</strong> info@cinexcinema.com</p>
+            </div>
         </div>
-        <div class="movie-grid" id="trendingGrid"></div>
+
+        <!-- Opening Times (Table) -->
+        <div class="info-section">
+            <h2>Opening Times</h2>
+            <table class="opening-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Opening Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monday - Thursday</td>
+                        <td>12:00 PM - 11:00 PM</td>
+                    </tr>
+                    <tr>
+                        <td>Friday - Saturday</td>
+                        <td>10:00 AM - 12:00 AM</td>
+                    </tr>
+                    <tr>
+                        <td>Sunday</td>
+                        <td>12:00 PM - 10:00 PM</td>
+                    </tr>
+                    <tr>
+                        <td>Bank Holidays</td>
+                        <td>10:00 AM - 11:00 PM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Screen Types (List) -->
+        <div class="info-section">
+            <h2>Our Screens</h2>
+            <ul class="screens-list">
+                <li><strong>Screen 1 (IMAX):</strong> Experience movies in breathtaking 70mm format</li>
+                <li><strong>Screen 2 (4DX):</strong> Feel the action with immersive motion seating</li>
+                <li><strong>Screen 3 (Dolby):</strong> Premium sight and sound in our flagship auditorium</li>
+                <li><strong>Screen 4 (Standard):</strong> Classic cinema experience, perfect for all films</li>
+                <li><strong>Screen 5 (VIP):</strong> Luxury seating with gourmet snacks available</li>
+            </ul>
+        </div>
+
+        <!-- Link to Movie Catalog -->
+        <div class="info-section link-section">
+            <p>Ready to see what's playing? <a href="#" class="nav-link" data-page="coming" style="color: #c084fc; font-weight: 600; text-decoration: underline;">View Movie Catalog</a></p>
+        </div>
     </div>
 </div>
