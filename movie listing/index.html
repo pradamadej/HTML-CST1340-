@@ -1,275 +1,126 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineX - Movie Tracker</title>
-    <!-- Local font stack - avoid external Google Fonts blocking -->
-    <!-- Swiper CSS (for carousel) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <!-- Font Awesome (for icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+```
+
 </head>
 <body>
 
-<!-- Placeholder for external structure sections -->
 <div id="site-header"></div>
 <main id="site-content"></main>
 <div id="site-footer"></div>
 
-<!-- ========== SCRIPTS ========== -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <script>
-    // Step 1: Load all HTML partials
-    async function loadLayout() {
-        try {
-            const cacheBust = `?cache=${Date.now()}`;
-            const headerRes = await fetch(`partials/header.html${cacheBust}`, { cache: 'no-store' });
-            const homeRes = await fetch(`partials/home.html${cacheBust}`, { cache: 'no-store' });
-            const comingRes = await fetch(`partials/coming.html${cacheBust}`, { cache: 'no-store' });
-            const footerRes = await fetch(`partials/footer.html${cacheBust}`, { cache: 'no-store' });
+async function loadLayout() {
+    const cacheBust = `?cache=${Date.now()}`;
 
-            const headerHtml = await headerRes.text();
-            const homeHtml = await homeRes.text();
-            const comingHtml = await comingRes.text();
-            const footerHtml = await footerRes.text();
+    const header = await fetch(`partials/header.html${cacheBust}`).then(r => r.text());
+    const home = await fetch(`partials/home.html${cacheBust}`).then(r => r.text());
+    const coming = await fetch(`partials/coming.html${cacheBust}`).then(r => r.text());
+    const footer = await fetch(`partials/footer.html${cacheBust}`).then(r => r.text());
 
-            const siteHeader = document.getElementById('site-header');
-            const siteContent = document.getElementById('site-content');
-            const siteFooter = document.getElementById('site-footer');
+    document.getElementById('site-header').innerHTML = header;
+    document.getElementById('site-content').innerHTML = home + coming;
+    document.getElementById('site-footer').innerHTML = footer;
+}
 
-            siteHeader.innerHTML = headerHtml;
-            siteContent.innerHTML = homeHtml + comingHtml;
-            siteFooter.innerHTML = footerHtml;
+// Load XSL page
+function loadCinemaTable() {
+    const container = document.getElementById("comingPage");
 
-            console.log("✓ Layout loaded");
-            console.log('  site-content child count:', siteContent.children.length);
-            console.log('  site-content ids:', Array.from(siteContent.querySelectorAll('[id]')).map(el => el.id).join(', '));
-        } catch (err) {
-            console.error('✗ Error loading layout:', err);
-        }
-    }
+    container.innerHTML = `
+        <iframe src="movies.xml"
+                style="width:100%; height:100vh; border:none;">
+        </iframe>
+    `;
+}
 
-    // Step 2: Load movies from XML
-    let moviesData = [];
-    
-    async function loadMovies() {
-        try {
-            console.log("Loading XML...");
-            const response = await fetch(`movies.xml?cache=${Date.now()}`, { cache: 'no-store' });
-            const xmlText = await response.text();
-            
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
-            
-            // Check for parse errors
-            if (xmlDoc.documentElement.tagName === 'parsererror') {
-                console.error('✗ XML parse error');
-                return;
-            }
-            
-            // Extract movies
-            const movieElements = xmlDoc.querySelectorAll('now_showing > movie');
-            console.log(`Found ${movieElements.length} movies`);
-            
-            moviesData = Array.from(movieElements).map(movie => {
-                const title = movie.querySelector('title')?.textContent || 'Unknown';
-                const genre = movie.querySelector('genre > type')?.textContent || 'Unknown';
-                const rating = movie.querySelector('rating')?.textContent || '—';
-                const duration = movie.querySelector('duration')?.textContent || '—';
-                const format = movie.querySelector('format')?.textContent || '—';
-                const image = movie.querySelector('image')?.textContent || 'images/placeholder.jpg';
-                
-                const times = Array.from(movie.querySelectorAll('showtimes > time'))
-                    .map(t => t.textContent.trim())
-                    .join(', ') || '—';
-                
-                return { title, genre, rating, duration, format, showtimes: times, image };
-            });
-            
-            console.log(`✓ Loaded ${moviesData.length} movies`);
-        } catch (err) {
-            console.error('✗ Error loading movies:', err);
-        }
-    }
+//  Loads movies for carousel
+async function loadMoviesForCarousel() {
+    try {
+        const response = await fetch("movies.xml");
+        const xmlText = await response.text();
 
-    // Build a fallback table inside the coming page when the partial is missing it
-    function ensureMovieTableExists() {
-        let tbody = document.getElementById('moviesTableBody');
-        if (tbody) return tbody;
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlText, "text/xml");
 
-        const comingPage = document.getElementById('comingPage');
-        if (!comingPage) {
-            return null;
-        }
+        const movies = xml.querySelectorAll("now_showing > movie");
 
-        comingPage.insertAdjacentHTML('beforeend', `
-            <div class="movies-table-wrapper">
-                <table class="movies-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Genre</th>
-                            <th>Rating</th>
-                            <th>Duration</th>
-                            <th>Format</th>
-                            <th>Showtimes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="moviesTableBody"></tbody>
-                </table>
-            </div>
-        `);
+        const carousel = document.getElementById("nowShowingCarousel");
 
-        console.warn('⚠️ Fallback movie table inserted into coming page');
-        return document.getElementById('moviesTableBody');
-    }
+        if (!carousel) return;
 
-    function buildHomeCarousel() {
-        const carouselWrapper = document.getElementById('nowShowingCarousel');
-        if (!carouselWrapper) {
-            return;
-        }
+        carousel.innerHTML = Array.from(movies).map(movie => {
+            const title = movie.querySelector("title")?.textContent;
+            const image = movie.querySelector("image")?.textContent;
 
-        carouselWrapper.innerHTML = moviesData.map(movie => `
-            <div class="swiper-slide">
-                <div class="movie-card">
-                    <img src="${movie.image}" alt="${movie.title} poster">
-                    <div class="movie-info">
-                        <h3>${movie.title}</h3>
-                        <div class="movie-details">
-                            <span>${movie.genre}</span>
-                            <span class="rating">${movie.rating}</span>
-                        </div>
-                        <a href="#" class="trailer-btn nav-link" data-page="coming">View showtimes</a>
+            return `
+                <div class="swiper-slide">
+                    <div class="movie-card">
+                        <img src="${image}" alt="${title}">
+                        <h3>${title}</h3>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         new Swiper('.now-showing-swiper', {
-            slidesPerView: 1.1,
-            spaceBetween: 18,
-            centeredSlides: true,
-            loop: true,
-            grabCursor: true,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            breakpoints: {
-                700: {
-                    slidesPerView: 2.1,
-                },
-                1100: {
-                    slidesPerView: 3.1,
-                },
-            },
+            slidesPerView: 1.2,
+            spaceBetween: 15,
+            loop: true
         });
+
+    } catch (err) {
+        console.error("Carousel error:", err);
     }
+}
 
-    // Step 3: Display movies in table
-    function displayMovies() {
-        // Debug: Check what's in the DOM
-        const table = document.querySelector('.movies-table');
-        let tbody = document.getElementById('moviesTableBody');
-        const comingPage = document.getElementById('comingPage');
-        
-        console.log('Debug info:');
-        console.log('  comingPage exists:', comingPage ? 'yes' : 'no');
-        console.log('  table exists:', table ? 'yes' : 'no');
-        console.log('  tbody exists initially:', tbody ? 'yes' : 'no');
-        console.log('  All elements with id:', Array.from(document.querySelectorAll('[id]')).map(e => e.id).join(', '));
+//  Navigation
+function setupPages() {
+    const homePage = document.getElementById('homePage');
+    const comingPage = document.getElementById('comingPage');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-        tbody = tbody || ensureMovieTableExists();
-        if (!tbody) {
-            const content = document.getElementById('site-content');
-            console.error('✗ Table body not found');
-            console.log('  site-content child count:', content ? content.children.length : 'none');
-            console.log('  site-content ids:', content ? Array.from(content.querySelectorAll('[id]')).map(el => el.id).join(', ') : 'none');
-            return;
-        }
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.dataset.page;
 
-        console.log(`Displaying ${moviesData.length} movies in table`);
-        tbody.innerHTML = '';
-        
-        moviesData.forEach(movie => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><strong>${movie.title}</strong></td>
-                <td>${movie.genre}</td>
-                <td>${movie.rating}</td>
-                <td>${movie.duration}</td>
-                <td>${movie.format}</td>
-                <td>${movie.showtimes}</td>
-            `;
-            tbody.appendChild(row);
+            if (page === 'home') {
+                homePage.classList.add('active');
+                comingPage.classList.remove('active');
+            }
+
+            if (page === 'coming') {
+                homePage.classList.remove('active');
+                comingPage.classList.add('active');
+                loadCinemaTable();
+            }
         });
-        
-        console.log('✓ Movies displayed');
-    }
+    });
 
-    // Step 4: Setup page switching
-    function setupPages() {
-        const homePage = document.getElementById('homePage');
-        const comingPage = document.getElementById('comingPage');
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        if (!homePage || !comingPage) {
-            console.error('✗ Pages not found');
-            return;
-        }
-        
-        console.log('✓ Pages found, setting up navigation');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = link.getAttribute('data-page');
-                console.log(`Clicked: ${page}`);
-                
-                if (page === 'home') {
-                    homePage.classList.add('active');
-                    comingPage.classList.remove('active');
-                    navLinks.forEach(l => l.classList.toggle('active', l === link));
-                } else if (page === 'coming') {
-                    homePage.classList.remove('active');
-                    comingPage.classList.add('active');
-                    navLinks.forEach(l => l.classList.toggle('active', l === link));
-                    displayMovies();
-                }
-            });
-        });
-        
-        // Set initial home page
-        homePage.classList.add('active');
-        comingPage.classList.remove('active');
-        console.log('✓ Navigation setup complete');
-    }
+    homePage.classList.add('active');
+}
 
-    // Step 5: Initialize everything
-    async function init() {
-        console.log('=== INITIALIZING SITE ===');
-        await loadLayout();
-        await loadMovies();
-        buildHomeCarousel();
-        setupPages();
-        // Don't display movies on init - only when coming page is clicked
-        console.log('=== INITIALIZATION COMPLETE ===');
-    }
+async function init() {
+    await loadLayout();
+    setupPages();
+    loadMoviesForCarousel(); 
+}
 
-    // Start the app when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
