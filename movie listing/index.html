@@ -76,10 +76,26 @@ async function loadMoviesForCarousel() {
         }).join('');
 
         new Swiper('.now-showing-swiper', {
-            slidesPerView: 1.2,
-            spaceBetween: 15,
-            loop: true
-        });
+slidesPerView: 1.2,
+spaceBetween: 15,
+loop: true,
+grabCursor: true,
+
+navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+},
+
+breakpoints: {
+    700: {
+        slidesPerView: 2.2,
+    },
+    1100: {
+        slidesPerView: 3.2,
+    }
+}
+
+});
 
     } catch (err) {
         console.error("Carousel error:", err);
